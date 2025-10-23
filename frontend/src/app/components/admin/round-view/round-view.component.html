@@ -1,0 +1,82 @@
+<div class="container my-4">
+
+  <h2 class="text-center mb-4">Round View</h2>
+
+  <!-- Previous Rounds Buttons -->
+  <div class="mb-3 text-center">
+    <div class="btn-group" role="group">
+      <button *ngFor="let r of rounds"
+              (click)="selectRound(r._id)"
+              [ngClass]="{'btn-primary': r._id === selectedRoundId, 'btn-outline-primary': r._id !== selectedRoundId}"
+              class="btn">
+        Round {{ r.roundNumber }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="getSelectedRound() as round">
+    <!-- Toggle Leaderboard -->
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="round.showLeaderboard" id="toggleLeaderboard">
+      <label class="form-check-label" for="toggleLeaderboard">
+        Show Leaderboard
+      </label>
+    </div>
+
+    <!-- Pairing View -->
+    <div *ngIf="!round.showLeaderboard" class="table-responsive">
+      <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Team 1</th>
+            <th>Score 1</th>
+            <th>Team 2</th>
+            <th>Score 2</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let match of round.matches; let i = index">
+            <td>{{ match.team1.name }}</td>
+            <td><input type="number" [(ngModel)]="match.score1" min="0" class="form-control form-control-sm"></td>
+            <td>{{ match.team2?.name || 'BYE' }}</td>
+            <td><input type="number" [(ngModel)]="match.score2" [disabled]="!match.team2" min="0" class="form-control form-control-sm"></td>
+            <td>
+              <button class="btn btn-success btn-sm" (click)="updateScore(match,i,round._id)" [disabled]="!match.team2">
+                Update 
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Leaderboard View -->
+    <div *ngIf="round.showLeaderboard" class="card">
+      <div class="card-header bg-primary text-white">
+        Leaderboard
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Team</th>
+              <th>Total Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of getLeaderboard(round)">
+              <td>{{ t[0] }}</td>
+              <td>{{ t[1] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Create Next Round -->
+    <div class="text-center mt-3">
+      <button class="btn btn-primary btn-lg" (click)="createNextRound()">Create Next Round</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="container mt-4" *ngIf="leaderboard?.length; else noData">
+  <div class="card shadow-lg border-0 rounded-4">
+    <!-- Header -->
+    <div
+      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+    >
+      <h4 class="mb-0">🏆 Tournament Leaderboard</h4>
+      <button class="btn btn-light btn-sm" (click)="downloadCSV()">
+        <i class="bi bi-download"></i> Download CSV
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body p-0">
+      <table
+        class="table table-hover table-striped mb-0 align-middle text-center"
+      >
+        <thead class="table-light">
+          <tr>
+            <th>Rank</th>
+            <th>Team Name</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let team of leaderboard; let i = index"
+            [ngClass]="{
+              'table-success': i === 0,
+              'table-info': i === 1,
+              'table-warning': i === 2
+            }"
+          >
+            <td><strong>{{ i+1 }}</strong></td>
+            <td class="fw-semibold text-start ps-3">{{ team.name }}</td>
+            <td>{{ team.wins || 0 }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer text-muted text-center small">
+      Updated for Round {{ selectedRound?.roundNumber || "-" }}
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="text-center text-muted mt-4">
+    <p>No leaderboard data available.</p>
+  </div>
+</ng-template>

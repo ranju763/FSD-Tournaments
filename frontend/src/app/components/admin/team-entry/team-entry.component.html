@@ -1,0 +1,111 @@
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="text-center mb-4 fw-bold">🏓 Team Management</h2>
+
+      <!-- Input Section -->
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <input
+            type="text"
+            [(ngModel)]="teamName"
+            class="form-control"
+            placeholder="Enter Team Name"
+          />
+        </div>
+        <div class="col-md-6">
+          <input
+            type="text"
+            [(ngModel)]="teamMembersInput"
+            class="form-control"
+            placeholder="Enter Team Members (comma separated)"
+          />
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-8">
+          <small class="text-muted">
+            Example: John Doe, Jane Smith, Mike Johnson
+          </small>
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button class="btn btn-success w-100" (click)="addOrUpdateTeam()">
+            {{ editingTeam ? "Update Team" : "Add Team" }}
+          </button>
+          <button
+            *ngIf="editingTeam"
+            class="btn btn-warning w-100"
+            (click)="resetForm()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Team List -->
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col" style="width: 5%">#</th>
+              <th scope="col">Team Name</th>
+              <th scope="col">Team Members</th>
+              <th scope="col" style="width: 25%">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let team of teams; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ team.name }}</td>
+              <td>
+                <span
+                  *ngIf="
+                    team.players && team.players.length > 0;
+                    else noMembers
+                  "
+                >
+                  {{ team.players.join(", ") }}
+                </span>
+                <ng-template #noMembers>
+                  <span class="text-muted">No members added</span>
+                </ng-template>
+              </td>
+              <td>
+                <div class="d-flex justify-content-center gap-2">
+                  <button
+                    class="btn btn-primary btn-sm"
+                    (click)="editTeam(team)"
+                  >
+                    <i class="bi bi-pencil-square"></i> Edit
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteTeam(team._id)"
+                  >
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="teams.length === 0">
+              <td colspan="4" class="text-center text-muted py-3">
+                No teams added yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Start Tournament Button -->
+      <div class="text-center">
+        <button
+          class="btn btn-lg btn-gradient btn-primary px-4"
+          (click)="startTournament()"
+        >
+          🚀 Start Tournament
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
