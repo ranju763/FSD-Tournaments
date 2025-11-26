@@ -302,7 +302,7 @@ app.get("/leaderboard", async (req, res) => {
 // GET /winner - compute wins across all rounds and return ranked leaderboard + top winner
 app.get("/winner", async (req, res) => {
   try {
-    // 1) Load all rounds and populate team refs so we have names
+    // 1️⃣ Load all rounds and populate team references
     const rounds = await Round.find()
       .populate("matches.team1")
       .populate("matches.team2")
@@ -311,25 +311,27 @@ app.get("/winner", async (req, res) => {
 
     const totalRounds = rounds.length;
 
-    // 2) Count wins per teamId (string)
+    // 2️⃣ Count wins per team
     const winsById = {}; // { teamIdString: winsCount }
     for (const r of rounds) {
       if (!r.matches) continue;
+
       for (const m of r.matches) {
-        // m.winner might be populated object or an ObjectId or null
         if (!m.winner) continue;
 
-        // get winner id as string robustly
-        const winnerId = (typeof m.winner === "string")
-          ? m.winner
-          : (m.winner._id ? String(m.winner._id) : String(m.winner));
+        // Get winner ID robustly
+        const winnerId =
+          typeof m.winner === "string"
+            ? m.winner
+            : m.winner._id
+            ? String(m.winner._id)
+            : String(m.winner);
 
         winsById[winnerId] = (winsById[winnerId] || 0) + 1;
       }
     }
 
-    // If no wins recorded, still return teams (with wins 0)
-    // Gather all team ids seen in rounds (team1/team2)
+    // 3️⃣ Collect all teams from rounds (even if they have 0 wins)
     const teamIdSet = new Set();
     for (const r of rounds) {
       for (const m of r.matches || []) {
@@ -338,50 +340,50 @@ app.get("/winner", async (req, res) => {
       }
     }
 
-    // If there are teams in DB but not in any round, you might want to include them.
-    // Optional: include all teams from Team collection:
-    // const allTeams = await Team.find().exec();
-    // allTeams.forEach(t => teamIdSet.add(String(t._id)));
-
     const teamIds = Array.from(teamIdSet);
 
-    // 3) Fetch team details for the ids we found
+    // 4️⃣ Fetch team details
     const teams = await Team.find({ _id: { $in: teamIds } }).exec();
 
-    // Map id -> team info
+    // Map id → team info
     const idToTeam = {};
-    teams.forEach(t => {
+    teams.forEach((t) => {
       idToTeam[String(t._id)] = t;
-      // Ensure a wins entry even if 0
       if (!winsById[String(t._id)]) winsById[String(t._id)] = 0;
     });
 
-    // 4) Build leaderboard array
+    // 5️⃣ Build leaderboard with name and wins
     const leaderboard = Object.entries(winsById)
       .map(([id, wins]) => {
         const team = idToTeam[id];
         return {
           _id: id,
           name: team ? team.name : "Unknown Team",
-          wins: wins || 0
+          wins: wins || 0,
         };
       })
       .sort((a, b) => b.wins - a.wins || a.name.localeCompare(b.name))
       .map((item, idx) => ({ rank: idx + 1, ...item }));
 
-    // 5) Top winner object
-    const winner = leaderboard.length > 0 ? leaderboard[0] : { _id: null, name: "No teams", wins: 0 };
+    // 6️⃣ Identify the top winner
+    const winner =
+      leaderboard.length > 0
+        ? leaderboard[0]
+        : { _id: null, name: "No teams", wins: 0 };
 
+    // 7️⃣ Return enhanced JSON
     return res.json({
       totalRounds,
       winner,
-      leaderboard
+      winnerName: winner.name, // ✅ Explicit winner name field
+      leaderboard,
     });
   } catch (err) {
     console.error("Error calculating winner:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 

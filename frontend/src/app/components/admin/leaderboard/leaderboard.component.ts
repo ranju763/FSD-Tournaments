@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Round } from '../../../models/round.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-leaderboard',
@@ -16,7 +17,7 @@ export class LeaderboardComponent implements OnInit, OnChanges {
 
   private apiUrl = 'http://localhost:5001/leaderboard'; // Backend route
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router: Router) {}
 
   // 🔹 Fetch leaderboard when component initializes
   ngOnInit() {
@@ -47,6 +48,9 @@ export class LeaderboardComponent implements OnInit, OnChanges {
         this.loading = false;
       }
     });
+  }
+  goToWinner() {
+    this.router.navigate(['/winner']); // Navigate to WinnerComponent
   }
 
   // 🔹 Download leaderboard as CSV

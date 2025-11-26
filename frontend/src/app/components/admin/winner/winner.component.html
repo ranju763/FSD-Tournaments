@@ -1,44 +1,39 @@
-<div class="container my-5" *ngIf="winner; else noWinner">
+<div class="container my-5" *ngIf="winner && leaderboard?.length; else noWinner">
+  <!-- Champion Card -->
   <div
-    class="card shadow-lg border-0 rounded-4 mx-auto text-center p-4"
+    class="card shadow-lg border-0 rounded-4 mx-auto text-center p-4 mb-4"
     style="max-width: 500px; background: linear-gradient(135deg, #007bff, #6610f2); color: white;"
   >
     <!-- Trophy Icon -->
-    <div class="display-1 mb-3">
-      🏆
-    </div>
+    <div class="display-1 mb-3">🏆</div>
 
     <!-- Title -->
-    <h3 class="fw-bold text-uppercase mb-3">
-      Tournament Champion
-    </h3>
+    <h3 class="fw-bold text-uppercase mb-3">Tournament Champion</h3>
 
-    <!-- Winner Card -->
+    <!-- Winner Details -->
     <div
       class="card border-0 shadow-sm mx-auto mb-3 rounded-4"
       style="max-width: 350px; background-color: rgba(255, 255, 255, 0.15);"
     >
       <div class="card-body">
-        <h2 class="fw-bold text-warning mb-2">
-          {{ winner.name }}
-        </h2>
+        <h2 class="fw-bold text-warning mb-2">Team {{ winner.name }}</h2>
         <p class="text-white-50 mb-0">
-          Wins: <strong>{{ winner.wins ?? 0 }}</strong> |
-          Losses: <strong>{{ winner.losses ?? 0 }}</strong>
+          Wins: <strong>{{ winner.wins ?? 0 }}</strong>
         </p>
       </div>
     </div>
 
-    <!-- Celebration Text -->
     <p class="fs-5 fw-light mb-4">
-      Congratulations to <strong>{{ winner.name }}</strong> for securing the top spot!
+      Congrats team <strong>{{ winner.name }}</strong>!
     </p>
 
-    <!-- Button -->
     <button class="btn btn-light fw-semibold px-4" (click)="goBack()">
       <i class="bi bi-arrow-left-circle me-2"></i>Back to Leaderboard
     </button>
   </div>
+
+  <!-- Top Winners List -->
+ 
 </div>
 
 <!-- No Winner -->

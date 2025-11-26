@@ -16,12 +16,34 @@
 
   <div *ngIf="getSelectedRound() as round">
     <!-- Toggle Leaderboard -->
-    <div class="form-check mb-3">
-      <input class="form-check-input" type="checkbox" [(ngModel)]="round.showLeaderboard" id="toggleLeaderboard">
-      <label class="form-check-label" for="toggleLeaderboard">
-        Show Leaderboard
-      </label>
-    </div>
+    
+   <div class="d-flex align-items-center mb-3">
+
+  <div class="btn-group btn-group-toggle">
+    <input 
+      type="radio" 
+      class="btn-check" 
+      name="toggleView" 
+      id="leaderboardBtn" 
+      [value]="true" 
+      [(ngModel)]="round.showLeaderboard" 
+      autocomplete="off"
+    >
+    <label class="btn btn-outline-primary" for="leaderboardBtn">Leaderboard</label>
+
+    <input 
+      type="radio" 
+      class="btn-check" 
+      name="toggleView" 
+      id="drawsBtn" 
+      [value]="false" 
+      [(ngModel)]="round.showLeaderboard" 
+      autocomplete="off"
+    >
+    <label class="btn btn-outline-primary" for="drawsBtn">Draws</label>
+  </div>
+</div>
+
 
     <!-- Pairing View -->
     <div *ngIf="!round.showLeaderboard" class="table-responsive">

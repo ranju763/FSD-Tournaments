@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-team-entry',
@@ -14,7 +15,7 @@ export class TeamEntryComponent {
   teams: any[] = [];
   editingTeam: any = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router: Router) {}
 
   // ✅ CREATE or UPDATE team
   addOrUpdateTeam() {
@@ -100,6 +101,7 @@ export class TeamEntryComponent {
     if (confirm('This will clear all existing rounds and start a new tournament. Continue?')) {
       this.http.post(`${this.apiUrl}/rounds/start/1`, {}).subscribe(() => {
         alert('Tournament started! First round created successfully.');
+        this.router.navigate(['/rounds']);
       });
     }
   }

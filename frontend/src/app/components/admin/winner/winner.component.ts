@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./winner.component.css']
 })
 export class WinnerComponent implements OnInit {
+  totalRounds: number = 0;
   winner: any = null;
   leaderboard: any[] = [];
-  totalRounds: number = 0;
-  loading = true;
-  errorMessage = '';
+  loading = false;
+  error = '';
+
   private apiUrl = 'http://localhost:5001/winner';
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -22,23 +23,27 @@ export class WinnerComponent implements OnInit {
     this.fetchWinner();
   }
 
+  // 🔹 Fetch winner and leaderboard data
   fetchWinner() {
-    this.http.get<any>(this.apiUrl).subscribe({
-      next: (res) => {
-        // ✅ Parse JSON correctly
+    this.loading = true;
+    this.error = '';
+
+    this.http.get(this.apiUrl).subscribe({
+      next: (res: any) => {
         this.totalRounds = res.totalRounds || 0;
         this.winner = res.winner || null;
-        this.leaderboard = Array.isArray(res.leaderboard) ? res.leaderboard : [];
+        this.leaderboard = res.leaderboard || [];
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching winner:', err);
-        this.errorMessage = 'Failed to load winner data.';
+        this.error = 'Failed to load winner data.';
         this.loading = false;
       }
     });
   }
 
+  // 🔹 Navigate back to leaderboard
   goBack() {
     this.router.navigate(['/leaderboard']);
   }

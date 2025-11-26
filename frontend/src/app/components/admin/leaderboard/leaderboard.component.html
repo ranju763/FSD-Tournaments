@@ -1,53 +1,71 @@
-<div class="container mt-4" *ngIf="leaderboard?.length; else noData">
-  <div class="card shadow-lg border-0 rounded-4">
+<div
+  class="d-flex justify-content-center mt-5"
+  *ngIf="leaderboard?.length; else noData"
+>
+  <div
+    class="card shadow border-0 rounded-4"
+    style="width: 100%; max-width: 700px"
+  >
     <!-- Header -->
     <div
-      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+      class="card-header text-white text-center fw-bold fs-4"
+      style="background: linear-gradient(135deg, #6a11cb, #2575fc)"
     >
-      <h4 class="mb-0">🏆 Tournament Leaderboard</h4>
-      <button class="btn btn-light btn-sm" (click)="downloadCSV()">
-        <i class="bi bi-download"></i> Download CSV
-      </button>
+      🏆 Tournament Leaderboard
     </div>
 
     <!-- Body -->
     <div class="card-body p-0">
-      <table
-        class="table table-hover table-striped mb-0 align-middle text-center"
-      >
-        <thead class="table-light">
-          <tr>
-            <th>Rank</th>
-            <th>Team Name</th>
-            <th>Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let team of leaderboard; let i = index"
-            [ngClass]="{
-              'table-success': i === 0,
-              'table-info': i === 1,
-              'table-warning': i === 2
-            }"
-          >
-            <td><strong>{{ i+1 }}</strong></td>
-            <td class="fw-semibold text-start ps-3">{{ team.name }}</td>
-            <td>{{ team.wins || 0 }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle text-center">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col" class="text-start ps-4">Team Name</th>
+              <th scope="col">Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let team of leaderboard; let i = index"
+              [ngStyle]="{
+                'background-color':
+                  i === 0
+                    ? '#ffd70033'
+                    : i === 1
+                    ? '#c0c0ff33'
+                    : i === 2
+                    ? '#cd7f3233'
+                    : 'transparent',
+                'font-weight': i < 3 ? '600' : '400'
+              }"
+            >
+              <td>
+                <strong>{{ i + 1 }}</strong>
+              </td>
+              <td class="text-start ps-4">{{ team.name }}</td>
+              <td>{{ team.wins || 0 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Footer -->
-    <div class="card-footer text-muted text-center small">
-      Updated for Round {{ selectedRound?.roundNumber || "-" }}
+    <div
+      class="card-footer text-muted text-center small d-flex justify-content-center"
+    >
+      <button class="btn btn-success btn-sm" (click)="goToWinner()">
+        Generate Winner
+      </button>
     </div>
   </div>
 </div>
 
+<!-- No Data Template -->
 <ng-template #noData>
-  <div class="text-center text-muted mt-4">
-    <p>No leaderboard data available.</p>
+  <div class="text-center mt-5">
+    <i class="bi bi-emoji-frown text-secondary fs-1"></i>
+    <p class="mt-3 text-muted fw-semibold">No leaderboard data available.</p>
   </div>
 </ng-template>
