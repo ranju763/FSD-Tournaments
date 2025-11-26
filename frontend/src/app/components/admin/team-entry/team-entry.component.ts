@@ -28,7 +28,7 @@ export class TeamEntryComponent {
       .map(member => member.trim())
       .filter(member => member.length > 0);
 
-    if (players.length === 0) return alert('Please enter at least one team member!');
+    if (players.length !== 2) return alert(`Validation Error: Expected exactly 2 teams, but found ${players.length}.`);
 
     const teamData = { 
       name: this.teamName, 

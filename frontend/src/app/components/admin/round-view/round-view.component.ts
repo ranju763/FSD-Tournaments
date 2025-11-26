@@ -28,7 +28,39 @@ export class RoundViewComponent {
       });
   }
 
-updateScore(match: any, matchIndex: number, roundId: string) {
+  updateScore(match: any, matchIndex: number, roundId: string) {
+    console.log("in")
+  
+  const score1 = match.score1;
+  const score2 = match.score2;
+
+  // --- 🛑 Validation Check Start 🛑 ---
+
+  let isValidScore = true;
+
+  if (score1 >= 11 || score2 >= 11) {
+    const scoreDifference = Math.abs(score1 - score2);
+
+    if (scoreDifference < 2) {
+
+      isValidScore = false;
+      console.error('Validation Error: Score difference must be at least 2 points for scores 11 or higher.');
+    }
+  } else if (score1 > 11 || score2 > 11) {
+
+      const scoreDifference = Math.abs(score1 - score2);
+      if (scoreDifference === 1) {
+          isValidScore = false;
+          console.error('Validation Error: Cannot submit scores in a Deuce state (difference of 1) when one score is 11 or more.');
+      }
+  }
+
+
+  if (!isValidScore) {
+    // Notify the user and stop the HTTP request
+    alert('Error: Invalid score combination. The winning score must be 11 or more, with a 2-point difference, or the game is in Deuce.');
+    return;
+  }
   this.http.post(`http://localhost:5001/rounds/${roundId}/match/${matchIndex}`, {
     score1: match.score1,
     score2: match.score2
